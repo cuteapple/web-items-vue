@@ -1,34 +1,26 @@
-let data = {
-    hint: 'ooxx',
-}
 
-let vm = new Vue({ el: '#app', data })
-
-let playground;
-let nodes;
-
-function hint(text) {
-    document.getElementById('hint').innerText = text;
-}
-
-function init() {
-    playground = document.getElementById('playground')
-    nodes = [...playground.querySelectorAll('div')]
-    player_round.next()
-
-    for (let node of nodes)
-        node.addEventListener('click', () => clicknode(node))//yes, I know I can use *this*
-}
-
-let players = ['o', 'x']
-let player_round = ((function* player_round() {
-    while (true) {
-        for (let player of players) {
-            playground.dataset.player = player
-            yield player
+Vue.component('ooxx-tile', {
+    data: () => ({
+        player: undefined
+    }),
+    computed: {
+        tileStyle() {
+            return this.player ? {backgroundImage: `url(img/${this.player}.png)` } : {/*empty tile*/}
         }
+    },
+    template: '<div :style="tileStyle"></div>'
+})
+
+let game = new Vue({
+    el: '#app',
+    data: {
+        hint: 'ooxx',
+        round: 0,
+        players: ['o', 'x'],
+        tiles: Array(9).fill()
     }
-})())
+})
+
 
 function clicknode(node) {
     if (node.dataset.holder) {

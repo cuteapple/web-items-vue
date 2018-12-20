@@ -9,33 +9,19 @@
     margin: auto;
 }
 
-#playground {/* grid */
+#playground { /* grid */
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    grid-gap: 2px;
-}
-
-#playground > div {
+    background-color: rgba(70, 219, 219, 0.59);
+    grid-gap: 3px;
     border: 3px solid rgba(70, 219, 219, 0.59);
 }
 
-/* is there a simpler way to change background transparent value? */
-[data-holder]:after {
-    content: '';
-    background-size: 100% 100%;
-    width: 100%;
-    height: 100%;
-    display: inline-block;
-}
-
-[data-holder = o]:after {
-    background-image: url(img/o.png);
-}
-
-[data-holder = x]:after {
-    background-image: url(img/x.png);
-}
+    #playground > div {
+        background-size: 100% 100%;
+        background-color: white;
+    }
 
 @keyframes blinker {
     50% {
