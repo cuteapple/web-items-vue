@@ -1,4 +1,8 @@
+let data = {
+    hint: 'ooxx',
+}
 
+let vm = new Vue({ el: '#app', data })
 
 let playground;
 let nodes;

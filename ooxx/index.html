@@ -3,22 +3,16 @@
 <head>
     <title>ooxx</title>
     <link href="ooxx.css" type="text/css" rel="stylesheet" />
-    <script src="ooxx.js"></script>
     <script src="vue.js"></script>
+    <script src="ooxx.js" defer></script>
 </head>
 <body onload="init()">
-    <div id="hint">ooxx</div>
-    <div id="playground">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
+    <div id="app">
+        <div id="hint">{{hint}}</div>
+        <div id="playground">
+            <div v-for="n in 9"></div>
+        </div>
+        <button id="reload" onclick="window.location.reload()">RELOAD</button>
     </div>
-    <button id="reload" onclick="window.location.reload()">RELOAD</button>
 </body>
 </html>
