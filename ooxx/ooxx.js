@@ -5,26 +5,49 @@ Vue.component('ooxx-tile', {
     }),
     computed: {
         tileStyle() {
-            return this.player ? {backgroundImage: `url(img/${this.player}.png)` } : {/*empty tile*/}
+            return this.player ? { backgroundImage: `url(img/${this.player}.png)` } : {/*empty tile*/ }
         }
     },
-    template: '<div :style="tileStyle"></div>'
+    methods: {
+        onClick() {
+            if (this.player) {
+                game.hint(`already occupied by ${this.player}`)
+                return
+            }
+            this.player = game.currentPlayer
+            game.nextStep();
+        }
+    },
+    template: '<div :style="tileStyle" @click="onClick"></div>'
 })
 
 let game = new Vue({
     el: '#app',
     data: {
         hint: 'ooxx',
-        round: 0,
+        step: 0,
         players: ['o', 'x'],
         tiles: Array(9).fill()
+    },
+    computed: {
+        currentPlayer() {
+            return this.players[this.step % this.players.length]
+        }
+    },
+    methods:{
+        hint(str) {
+            this.hint = str
+        },
+        nextStep() {
+            ++this.step
+        }
     }
 })
 
 
 function clicknode(node) {
     if (node.dataset.holder) {
-        hint('already used')
+        hint('')
         return;
     }
     node.dataset.holder = playground.dataset.player

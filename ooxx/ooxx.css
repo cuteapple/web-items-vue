@@ -18,7 +18,7 @@
     border: 3px solid rgba(70, 219, 219, 0.59);
 }
 
-    #playground > div {
+    #playground > div { /* tile */
         background-size: 100% 100%;
         background-color: white;
     }
