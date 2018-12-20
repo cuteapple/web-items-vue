@@ -10,7 +10,7 @@
     <div id="app">
         <div id="hint">{{hint}}</div>
         <div id="playground">
-            <ooxx-tile v-for="n in 9" :key="n"></ooxx-tile>
+            <ooxx-tile v-for="n in 9" :key="n" :index="n"></ooxx-tile>
         </div>
         <button id="reload" onclick="window.location.reload()">RELOAD</button>
     </div>

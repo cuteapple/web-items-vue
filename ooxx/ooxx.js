@@ -1,5 +1,6 @@
 
 Vue.component('ooxx-tile', {
+    props:['index'],
     data: () => ({
         player: undefined
     }),
@@ -11,11 +12,11 @@ Vue.component('ooxx-tile', {
     methods: {
         onClick() {
             if (this.player) {
-                game.hint(`already occupied by ${this.player}`)
+                this.$parent.showHint(`already occupied by ${this.player}`)
                 return
             }
-            this.player = game.currentPlayer
-            game.nextStep();
+            this.player = this.$parent.currentPlayer
+            this.$parent.nextStep();
         }
     },
     template: '<div :style="tileStyle" @click="onClick"></div>'
@@ -26,8 +27,7 @@ let game = new Vue({
     data: {
         hint: 'ooxx',
         step: 0,
-        players: ['o', 'x'],
-        tiles: Array(9).fill()
+        players: ['o', 'x']
     },
     computed: {
         currentPlayer() {
@@ -35,25 +35,18 @@ let game = new Vue({
         }
     },
     methods:{
-        hint(str) {
+        showHint(str) {
             this.hint = str
         },
         nextStep() {
             ++this.step
+        },
+        checkEnd() {
+            
         }
     }
 })
 
-
-function clicknode(node) {
-    if (node.dataset.holder) {
-        hint('')
-        return;
-    }
-    node.dataset.holder = playground.dataset.player
-    if (!try_finish())
-        player_round.next()
-}
 
 let win_test = [
     [0, 1, 2],
