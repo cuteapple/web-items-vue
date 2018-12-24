@@ -1,10 +1,5 @@
 ﻿Vue.component('puzzle-tile', {
     props: ['number', 'match', 'cursor'],
-    computed: {
-        correct() {
-            return this.number == this.match
-        }
-    },
     template: `<img :class="['tile',cursor?'cursor':'']" :src="'img/'+number+'.png'"></div>`
 })
 
@@ -19,8 +14,10 @@ let game = new Vue({
     el: '#app',
     data: {
         hint: "8-puzzle",
-        grid: [[0, 1, 2], [3, 4, 5], [6, 7, 8]],
-        cursorPos: [0, 0],
+        grid: [[0, 1, 2], [3, 4, 5], [6, 7, 8]], //start in a unfinished state
+        cursorPos: [0, 0], //any value can becomes the cursor
+        movement: { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }, //possible movement
+        initShuffleIteration: 1000, //number of attempt to do a random move at init
     },
     computed: {
         cursorIndex() {
@@ -29,11 +26,14 @@ let game = new Vue({
         numbers() {
             return [].concat(...this.grid)
         },
+        end() {
+            return this.numbers.every((v, i) => v == i)
+        }
     },
     methods: {
-
         /**move cursor to cursorPos + [dx,dy] if possible*/
         move(dx, dy) {
+
             let [x, y] = this.cursorPos
             let targetPos = [x + dx, y + dy]
             if (!grid_utils.inbound(targetPos)) {
@@ -52,14 +52,25 @@ let game = new Vue({
 
             // vue do not catch array update (of course neither 2D)
             this.grid = this.grid.concat([])
+
+            if (this.end) {
+                this.hint = '🎉'
+            }
+        }
+    },
+    created() {
+        const movement = Object.values(this.movement)
+        for (let i = 0; i < this.initShuffleIteration; ++i) {
+            this.move(...movement[Math.floor(Math.random() * 4)])
         }
     },
     mounted() {
+        let { up, down, left, right } = this.movement;
         RegisterGlobalArrowKeyHandler(
-            () => this.move(0, -1),//up
-            () => this.move(0, 1),//down
-            () => this.move(-1, 0),//left
-            () => this.move(1, 0)//right
+            () => this.move(...up),//up
+            () => this.move(...down),//down
+            () => this.move(...left),//left
+            () => this.move(...right)//right
         )
     }
 })
@@ -87,32 +98,4 @@ function RegisterGlobalArrowKeyHandler(up, down, left, right) {
         if (target)
             target();
     }
-}
-
-
-
-function move(direction) {
-    let [dx, dy] = controller4.to2D(direction, [1, -1])
-    let pos = grid_utils.xy(cursor)
-    pos[0] += dx
-    pos[1] += dy
-
-    if (!grid_utils.inbound(pos)) {
-        hint('❌')
-        return
-    }
-    let target = grid_utils.flatten(pos)
-    swapTile(grids[cursor].firstChild, grids[target].firstChild)
-    cursor = target
-
-    if (test_finish()) {
-        hint('🏁')
-    }
-    else {
-        hint('8-puzzle')
-    }
-}
-
-function test_finish() {
-    return tiles.every(x => x.dataset.n == x.parentElement.dataset.n)
 }
