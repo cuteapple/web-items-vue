@@ -7,5 +7,6 @@ lerning vue by port [my vanilla repo](https://github.com/cuteapple/web-items) to
 
 ---
 
-- [ooxx](./ooxx/)
+- [ooxx](https://cuteapple.github.io/web-items-vue/ooxx/)
+
 <img src="ooxx/cover.png" width="256">
