@@ -5,8 +5,6 @@
             return this.number == this.match
         }
     },
-    methods: {
-    },
     template: `<img :class="['tile',cursor?'cursor':'']" :src="'img/'+number+'.png'"></div>`
 })
 
@@ -42,6 +40,7 @@ let game = new Vue({
                 return
             }
 
+            this.hint = '8-puzzle'
             let [nx, ny] = targetPos
 
             // swap 2 tile
@@ -50,72 +49,46 @@ let game = new Vue({
             this.grid[y][x] = tmp
             this.cursorPos = targetPos
 
+            // vue do not catch array update (of course neither 2D)
             this.$forceUpdate()
         }
+    },
+    mounted() {
+        RegisterGlobalArrowKeyHandler(
+            () => this.move(0, -1),//up
+            () => this.move(0, 1),//down
+            () => this.move(-1, 0),//left
+            () => this.move(1, 0)//right
+        )
     }
 })
 
-
-
-
-
-
-
-
-
-function hint(text) {
-    document.getElementById('hint').innerText = text;
-}
-
-function init() {
-
-    //links
-    links = []
-
-    let { inbound, flatten } = grid_utils
-    for (let x = 0; x < 3; ++x)
-        for (let y = 0; y < 3; ++y) {
-            candidate = [
-                [x - 1, y],
-                [x + 1, y],
-                [x, y + 1],
-                [x, y - 1]
-            ]
-            links[flatten([x, y])] = candidate.filter(inbound).map(flatten)
+/**
+ * register a set of global arrow key event handler
+ * any undefined handler would not cause error
+ * @param {()=>void} up handler for up key down event
+ * @param {()=>void} down handler for down key down event
+ * @param {()=>void} left handler for left key down event
+ * @param {()=>void} right handler for right key down event
+ */
+function RegisterGlobalArrowKeyHandler(up, down, left, right) {
+    //cuteapple@github 2018
+    document.addEventListener('keydown', handler)
+    function handler(ev) {
+        let target;
+        switch (ev.key) {
+            case "ArrowLeft": target = left; break;
+            case "ArrowRight": target = right; break;
+            case "ArrowUp": target = up; break;
+            case "ArrowDown": target = down; break;
+            default: break; // do nothing
         }
-
-
-    let randomSelect = (arr) => arr[Math.floor(Math.random() * arr.length)]
-
-
-    //shuffle
-    let replace = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-    let pos = cursor
-    for (let i = 0; i < shuffle_times; ++i) {
-        let next_pos = randomSelect(links[pos]);
-        [replace[pos], replace[next_pos]] = [replace[next_pos], replace[pos]]
-        pos = next_pos
+        if (target)
+            target();
     }
-    cursor = pos
-
-
-    ///grids
-    grids = [...playground.children]
-    for (let i = 0; i < 9; ++i) {
-        grids[i].dataset.n = i;
-        grids[i].appendChild(tiles[replace[i]])
-    }
-
-    //install handler
-    controller.all = move;
 }
 
-function swapTile(a, b) {
-    pa = a.parentElement
-    pb = b.parentElement
-    pa.appendChild(b)
-    pb.appendChild(a)
-}
+
 
 function move(direction) {
     let [dx, dy] = controller4.to2D(direction, [1, -1])
