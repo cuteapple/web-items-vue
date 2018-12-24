@@ -1,18 +1,58 @@
 ﻿Vue.component('puzzle-tile', {
     props: ['number', 'match', 'cursor'],
     computed: {
+        correct() {
+            return this.number == this.match
+        }
     },
     methods: {
     },
     template: `<img :class="['tile',cursor?'cursor':'']" :src="'img/'+number+'.png'"></div>`
 })
 
+
+let grid_utils = {
+    flatten: ([x, y]) => x + y * 3,
+    inbound: ([x, y]) => x >= 0 && x < 3 && y >= 0 && y < 3,
+    xy: index => [index % 3, Math.floor(index / 3)]
+}
+
 let game = new Vue({
     el: '#app',
     data: {
         hint: "8-puzzle",
-        numbers: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-        cursor: 0
+        grid: [[0, 1, 2], [3, 4, 5], [6, 7, 8]],
+        cursorPos: [0, 0],
+    },
+    computed: {
+        cursorIndex() {
+            return grid_utils.flatten(this.cursorPos)
+        },
+    },
+    methods: {
+        numbers() {
+            return [].concat(...this.grid)
+        },
+        /**move cursor to cursorPos + [dx,dy] if possible*/
+        move(dx, dy) {
+            let [x, y] = this.cursorPos
+            let targetPos = [x + dx, y + dy]
+            if (!grid_utils.inbound(targetPos)) {
+                this.hint = '❌'
+                return
+            }
+
+            let [nx, ny] = targetPos
+
+            // swap 2 tile
+            let tmp = this.grid[ny][nx]
+            this.grid[ny][nx] = this.grid[y][x]
+            this.grid[y][x] = tmp
+
+            this.$forceUpdate()
+
+            this.cursorPos = targetPos
+        }
     }
 })
 
@@ -28,26 +68,7 @@ function hint(text) {
     document.getElementById('hint').innerText = text;
 }
 
-let grid_utils = {
-    flatten: ([x, y]) => x + y * 3,
-    inbound: ([x, y]) => x >= 0 && x < 3 && y >= 0 && y < 3,
-    xy: index => [index % 3, Math.floor(index / 3)]
-}
 function init() {
-    playground = document.getElementById('playground')
-
-
-    /// tiles
-    tiles = []
-    for (let i = 0; i < 9; ++i) {
-        let tile = document.createElement('img')
-        tile.className = 'tile'
-        tile.src = `img/${i}.png`
-        tile.dataset.n = i;
-        tiles.push(tile)
-    }
-    tiles[0].classList.add('cursor')
-
 
     //links
     links = []
