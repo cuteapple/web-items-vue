@@ -1,6 +1,6 @@
 
 Vue.component('ooxx-tile', {
-    props: ['index','player'],
+    props: ['index','player','win'],
     computed: {
         tileStyle() {
             return this.player ? { backgroundImage: `url(img/${this.player}.png)` } : {/*empty tile*/ }
@@ -14,8 +14,21 @@ Vue.component('ooxx-tile', {
     created: function () {
         this.game = this.$parent
     },
-    template: '<div :style="tileStyle" @click="onClick"></div>'
+    template: `<div :class="[win?'blink':'']" :style="tileStyle" @click="onClick"></div>`
 })
+
+const win_test = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+
+    [0, 4, 8],
+    [2, 4, 6]
+]
 
 let game = new Vue({
     el: '#app',
@@ -23,7 +36,7 @@ let game = new Vue({
         hint: 'ooxx',
         step: 0,
         players: ['o', 'x'],
-        grid: Array(9).fill(),
+        grid: Array(9).fill(),       
     },
     computed: {
         currentPlayer() {
@@ -34,7 +47,7 @@ let game = new Vue({
             for (let indexGroup of win_test) {
                 let holders = indexGroup.map(i => this.grid[i])
                 if (holders.every(p => p == this.currentPlayer))
-                    tiles.push(...holders)
+                    tiles.push(...indexGroup)
             }
             return new Set(tiles)
         },
@@ -73,16 +86,3 @@ let game = new Vue({
         }
     }
 })
-
-const win_test = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-
-    [0, 4, 8],
-    [2, 4, 6]
-]
