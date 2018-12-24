@@ -1,9 +1,6 @@
 
 Vue.component('ooxx-tile', {
-    props:['index'],
-    data: () => ({
-        player: undefined
-    }),
+    props: ['index','player'],
     computed: {
         tileStyle() {
             return this.player ? { backgroundImage: `url(img/${this.player}.png)` } : {/*empty tile*/ }
@@ -11,13 +8,11 @@ Vue.component('ooxx-tile', {
     },
     methods: {
         onClick() {
-            if (this.player) {
-                this.$parent.showHint(`already occupied by ${this.player}`)
-                return
-            }
-            this.player = this.$parent.currentPlayer
-            this.$parent.nextStep();
+            this.game.tileClicked(this)
         }
+    },
+    created: function () {
+        this.game = this.$parent
     },
     template: '<div :style="tileStyle" @click="onClick"></div>'
 })
@@ -27,28 +22,59 @@ let game = new Vue({
     data: {
         hint: 'ooxx',
         step: 0,
-        players: ['o', 'x']
+        players: ['o', 'x'],
+        grid: Array(9).fill(),
     },
     computed: {
         currentPlayer() {
             return this.players[this.step % this.players.length]
+        },
+        win_tiles() {
+            let tiles = [];
+            for (let indexGroup of win_test) {
+                let holders = indexGroup.map(i => this.grid[i])
+                if (holders.every(p => p == this.currentPlayer))
+                    tiles.push(...holders)
+            }
+            return new Set(tiles)
+        },
+        end() {
+            return this.win_tiles.size != 0
         }
     },
     methods:{
         showHint(str) {
             this.hint = str
         },
-        nextStep() {
-            ++this.step
+        tileClicked(tile) {
+            //end
+            if (this.end) {
+                this.showHint(`already finish : (${this.currentPlayer} wins)`)
+                return
+            }
+
+            //have already occupied
+            if (tile.player) {
+                this.showHint(`already occupied by ${tile.player}`)
+                return
+            }
+
+            //occupy this grid
+            this.$set(this.grid, tile.index, this.currentPlayer)
+            this.endTurn()
         },
-        checkEnd() {
-            
+        endTurn() {
+            if (this.end) {
+                this.showHint(`${this.currentPlayer} wins`)
+            }
+            else {
+                ++this.step
+            }
         }
     }
 })
 
-
-let win_test = [
+const win_test = [
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
@@ -60,35 +86,3 @@ let win_test = [
     [0, 4, 8],
     [2, 4, 6]
 ]
-
-function all(arr, predict) {
-    for (let x of arr)
-        if (!predict(x))
-            return false
-    return true
-}
-
-function try_finish() {
-
-    let win_nodes = []
-    // someone win ?
-    for (let player of players) for (let test of win_test) {
-        if (all(test, i => nodes[i].dataset.holder == player)) {
-            clicknode = () => hint(`already finish (${player} wins)`)
-            hint(`${player} wins`)
-            for (let id of test)
-                nodes[id].dataset.win = ''
-            return true
-        }
-    }
-
-    // draw ? (full only, no predication)
-    if (all(nodes, n => n.dataset.holder)) {
-        clicknode = () => hint(`already finish (draw)`)
-        hint('draw')
-        return true
-    }
-
-    // continue
-    return false
-}
