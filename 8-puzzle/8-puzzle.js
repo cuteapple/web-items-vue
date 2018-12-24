@@ -1,18 +1,18 @@
 ﻿Vue.component('puzzle-tile', {
-    props: ['number', 'match'],
+    props: ['number', 'match', 'cursor'],
     computed: {
     },
     methods: {
     },
-    template: `<img class="tile" :src="'img/'+number+'.png'"></div>`
+    template: `<img :class="['tile',cursor?'cursor':'']" :src="'img/'+number+'.png'"></div>`
 })
 
 let game = new Vue({
     el: '#app',
     data: {
         hint: "8-puzzle",
-        numbers: [0,1, 2, 3, 4, 5, 6, 7, 8],
-        cursor:1
+        numbers: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+        cursor: 0
     }
 })
 
