@@ -1,0 +1,49 @@
+* {
+    box-sizing: border-box
+}
+
+
+#playground { /* self */
+    width: 80vmin;
+    height: 80vmin;
+    margin: auto;
+}
+
+#playground { /* grid */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    border: 3px solid rgba(70, 219, 219, 0.59);
+}
+
+    #playground > div { /* tile */
+        background-size: 100% 100%;
+        background-color: white;
+        border: 1px solid rgba(70, 219, 219, 0.59);
+    }
+
+@keyframes blinker {
+    50% {
+        opacity: 0.3;
+    }
+}
+
+.blink {
+    animation: blinker 2s ease-in-out infinite;
+}
+
+#hint{
+    margin:auto;
+    text-align:center;
+    font-size:3em;
+}
+
+#reload {
+    display: block;
+    margin: 10px auto;
+    text-align: center;
+    font-size: 3em;
+    border: 3px solid rgba(221, 201, 255, 0.8);
+    border-radius: 3px;
+    background-color: rgba(115, 193, 248, 0.8);
+}

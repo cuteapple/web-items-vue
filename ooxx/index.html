@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ooxx</title>
+    <link href="ooxx.css" type="text/css" rel="stylesheet" />
+    <script src="vue.js" defer></script>
+    <script src="ooxx.js" defer></script>
+</head>
+<body>
+    <div id="app">
+        <div id="hint">{{hint}}</div>
+        <div id="playground">
+            <ooxx-tile  v-for="(data,index) in grid" :win="win_tiles.has(index)" :key="index" :index="index" :player="data"></ooxx-tile>
+        </div>
+        <button id="reload" onclick="window.location.reload()">RELOAD</button>
+    </div>
+</body>
+</html>
