@@ -29,7 +29,7 @@
     }
 }
 
-[data-win]:after {
+.blink {
     animation: blinker 2s ease-in-out infinite;
 }
 
