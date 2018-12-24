@@ -1,10 +1,28 @@
-﻿let playground
-let grids
-let tiles
-let links
-let cursor = 0
-let controller = new controller4()
-let shuffle_times = 1000
+﻿Vue.component('puzzle-tile', {
+    props: ['number', 'match'],
+    computed: {
+    },
+    methods: {
+    },
+    template: `<img class="tile" :src="'img/'+number+'.png'"></div>`
+})
+
+let game = new Vue({
+    el: '#app',
+    data: {
+        hint: "8-puzzle",
+        numbers: [0,1, 2, 3, 4, 5, 6, 7, 8],
+        cursor:1
+    }
+})
+
+
+
+
+
+
+
+
 
 function hint(text) {
     document.getElementById('hint').innerText = text;
