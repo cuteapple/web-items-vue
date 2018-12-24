@@ -10,12 +10,20 @@ let grid_utils = {
     xy: index => [index % 3, Math.floor(index / 3)]
 }
 
+/**
+ * return int between [0,upper)
+ * @param {Number} upper
+ */
+function randomInt(upper) {
+    return Math.floor(Math.random() * upper)
+}
+
 let game = new Vue({
     el: '#app',
     data: {
         hint: "8-puzzle",
-        grid: [[0, 1, 2], [3, 4, 5], [6, 7, 8]], //start in a unfinished state
-        cursorPos: [0, 0], //any value can becomes the cursor
+        grid: [[0, 1, 2], [3, 4, 5], [6, 7, 8]],
+        cursorPos: [randomInt(3), randomInt(3)], //any value can becomes the cursor
         movement: { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }, //possible movement
         initShuffleIteration: 1000, //number of attempt to do a random move at init
     },
@@ -61,7 +69,7 @@ let game = new Vue({
     created() {
         const movement = Object.values(this.movement)
         for (let i = 0; i < this.initShuffleIteration; ++i) {
-            this.move(...movement[Math.floor(Math.random() * 4)])
+            this.move(...movement[randomInt(movement.length)])
         }
     },
     mounted() {
