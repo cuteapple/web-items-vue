@@ -48,10 +48,9 @@ let game = new Vue({
             let tmp = this.grid[ny][nx]
             this.grid[ny][nx] = this.grid[y][x]
             this.grid[y][x] = tmp
+            this.cursorPos = targetPos
 
             this.$forceUpdate()
-
-            this.cursorPos = targetPos
         }
     }
 })
