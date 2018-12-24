@@ -26,11 +26,12 @@ let game = new Vue({
         cursorIndex() {
             return grid_utils.flatten(this.cursorPos)
         },
-    },
-    methods: {
         numbers() {
             return [].concat(...this.grid)
         },
+    },
+    methods: {
+
         /**move cursor to cursorPos + [dx,dy] if possible*/
         move(dx, dy) {
             let [x, y] = this.cursorPos
@@ -50,7 +51,7 @@ let game = new Vue({
             this.cursorPos = targetPos
 
             // vue do not catch array update (of course neither 2D)
-            this.$forceUpdate()
+            this.grid = this.grid.concat([])
         }
     },
     mounted() {

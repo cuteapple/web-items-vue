@@ -10,7 +10,7 @@
     <div id="app">
         <div id="hint">{{hint}}</div>
         <div id="playground">
-            <puzzle-tile v-for="(n,index) in numbers()" :cursor="index==cursorIndex" :key="index" :number="n" :match="index"></puzzle-tile>
+            <puzzle-tile v-for="(n,index) in numbers" :cursor="index==cursorIndex" :key="index" :number="n" :match="index"></puzzle-tile>
         </div>
         <button id="reload" onclick="window.location.reload()">RELOAD</button>
     </div>
