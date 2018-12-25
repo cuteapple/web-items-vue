@@ -14,19 +14,24 @@
 let game = new Vue({
     el: '#app',
     data: {
-        hint: '🐍snake🐍😵🍱🎉',
+        title: '🐍snake🐍',
         end: false,
         size: [50, 50],
 
-        head: [0, 0],
+        head: [25, 25],
         /** [ [x,y] , [x2,y2] , ... ]  */
         body: [],
-        foods: [[5, 5]],
+        /** [ [x,y] , [x2,y2] , ... ]  */
+        foods: [],
+
+        nfoods: 3,
 
         movement: { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }, //possible movement
         moveIntent: undefined,
     },
     computed: {
+
+        hint() { return this.end ? this.end : this.title },
         width() { return this.size[0] },
         height() { return this.size[1] },
         gridStyle() {
@@ -34,10 +39,14 @@ let game = new Vue({
                 'grid-template-columns': `repeat(${this.width},1fr)`,
                 'grid-template-rows': `repeat(${this.height},1fr)`
             }
-        }
+        },
     },
     methods: {
         move(dx, dy) {
+            if (this.end) {
+                return
+            }
+
             let [x, y] = this.head
             let newPos = [x + dx, y + dy]
 
@@ -47,14 +56,23 @@ let game = new Vue({
                 return this.move(-dx, -dy)
             }
 
+            if (!this.inside(...newPos)) {
+                this.end = '😵'
+                return
+            }
+
             //eating foods
-            for (let food of this.foods) {
+            for (let i = 0; i < this.foods.length; ++i) {
+                let food = this.foods[i]
                 if (this.posEqual(newPos, food)) {
                     this.body.push([...food])//the exact posision is not important, would erased by body move
                     let new_food = this.randomEmptyGrid()
-                    food[0] = new_food[0]
-                    food[1] = new_food[1]
-                    this.foods = [...this.foods]//trigger update
+                    if (new_food)
+                        this.foods.splice(i, 1, new_food)
+                    else
+                        this.foods.splice(i, 1)
+
+                    break;
                 }
             }
 
@@ -63,6 +81,11 @@ let game = new Vue({
                 this.body = [this.head, ...this.body.slice(0, -1)]
             }
             this.head = newPos
+
+            if (this.body.length == this.width * this.height - 1) {
+                this.end = '🍱'
+                return
+            }
         },
 
         /** return pos to random empty cell */
@@ -77,7 +100,9 @@ let game = new Vue({
                 if (!lookup.has(index)) { --nempty }
                 ++index
             }
-            return this.deflatten(index)
+
+            let pos = this.deflatten(index)
+            return this.inside(...pos) ? pos : undefined
         },
 
         /** return y*width + x */
@@ -87,14 +112,13 @@ let game = new Vue({
         deflatten(flatIndex) { return [Math.floor(flatIndex / this.width), flatIndex % this.width] },
 
         /** check equality of two position */
-        posEqual(p1, p2) { return this.flatten(p1) == this.flatten(p2) }
+        posEqual(p1, p2) { return this.flatten(p1) == this.flatten(p2) },
+
+        /** check if pos is inside game area */
+        inside(x, y) { return x >= 0 && x < this.width && y >= 0 && y < this.height }
     },
     created() {
-        const move = () => {
-            if (this.moveIntent)
-                this.move(...this.moveIntent)
-        }
-        setInterval(move, 60)
+        this.foods = Array(this.nfoods).fill().map(() => this.randomEmptyGrid())
     },
     mounted() {
         const { up, down, left, right } = this.movement;
@@ -104,6 +128,12 @@ let game = new Vue({
             () => { this.moveIntent = left },//left
             () => { this.moveIntent = right }//right
         )
+
+        const move = () => {
+            if (this.moveIntent)
+                this.move(...this.moveIntent)
+        }
+        setInterval(move, 60)
     }
 })
 
