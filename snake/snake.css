@@ -1,0 +1,58 @@
+* {
+    box-sizing: border-box
+}
+
+#playground {
+    margin: auto;
+    width: 80vmin;
+    height: 80vmin;
+}
+
+#playground {
+    display: grid;
+    grid-gap: 0px;
+    background-color: lightskyblue;
+    border: 3px solid #878feb;
+}
+
+.snake {
+    border-radius: 50% 50%;
+    background-color: greenyellow;
+    width: 100%;
+    height: 100%;
+}
+
+    .snake.head {
+        background-color: red;
+    }
+
+.food {
+    background-color: orange;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0.3;
+        background-color:red;
+    }
+}
+
+.blink {
+    animation: blink 2s ease-in-out infinite;
+}
+
+#hint {
+    margin: auto;
+    text-align: center;
+    font-size: 3em;
+}
+
+#reload {
+    display: block;
+    margin: 10px auto;
+    text-align: center;
+    font-size: 2.2em;
+    border: 3px solid rgba(221, 201, 255, 0.8);
+    border-radius: 3px;
+    background-color: rgba(115, 193, 248, 0.8);
+}
