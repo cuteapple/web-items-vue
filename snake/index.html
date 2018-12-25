@@ -1,14 +1,16 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>snake</title>
+    <title>🐍snake🐍</title>
     <link href="snake.css" type="text/css" rel="stylesheet" />
-    <script src="../controllers/4way.js"></script>
-    <script src="snake.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js" defer></script>
+    <script src="snake.js" defer></script>
 </head>
-<body onload="init()">
-    <div id="hint">snake</div>
-    <div id="playground"></div>
-    <button id="reload" onclick="window.location.reload()">RELOAD</button>
+<body>
+    <div id="app">
+        <div id="hint">{{hint}}</div>
+        <div id="playground"></div>
+        <button onclick="window.location.reload()">RELOAD</button>
+    </div>
 </body>
 </html>
