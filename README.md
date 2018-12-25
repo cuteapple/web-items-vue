@@ -27,4 +27,19 @@ difference:
  - random cursor number
  - 🎉 emoji for finish
 
- ---
+---
+
+
+- [🐍snake🐍](https://cuteapple.github.io/web-items-vue/snake/)
+
+<img src="snake/cover.png" width="256">
+
+difference:
+
+ - support multiple foods
+ - 🐍
+
+todo:
+ - config(auto,size,nfoods,speed?)
+
+---
