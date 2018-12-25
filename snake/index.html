@@ -1,20 +1,31 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>🐍snake🐍</title>
+    <title>🐍Snake🐍</title>
     <link href="snake.css" type="text/css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js" defer></script>
+    <script src="snake-config.js" defer></script>
     <script src="snake.js" defer></script>
 </head>
 <body>
     <div id="app">
         <div id="hint">{{hint}}</div>
         <div id="playground" :style="gridStyle">
-            <grid-div class="snake head" :x="head[0]" :y="head[1]"></grid-div>
+            <grid-div class="snake head" :class="[end == '😵'?'blink':'']" :x="head[0]" :y="head[1]"></grid-div>
             <grid-div class="snake body" v-for="(p,i) in body" :key="'body'+i" :x="p[0]" :y="p[1]"></grid-div>
             <grid-div class="food" v-for="(p,i) in foods" :key="'food'+i" :x="p[0]" :y="p[1]"></grid-div>
         </div>
         <button id="reload" onclick="window.location.reload()">RELOAD</button>
+    </div>
+    <div id="config-app">
+        <button v-if="collapse" id="config-btn" @click="collapse = false">⚙️</button>
+        <section id="config-form" v-if="!collapse">
+            <label style="display:block"><input type="number" name="width" v-model.number="size">↔️</label>
+            <label style="display:block"><input type="number" name="width" v-model.number="nfood">🍱</label>
+            <label><input v-show="false" type="checkbox" name="movement" v-model="auto">{{movementIcon}}</label>
+            <button style="float:right" @click="apply">✔️</button>
+            <button style="float:right" @click="cancel">❌</button>
+        </section>
     </div>
 </body>
 </html>

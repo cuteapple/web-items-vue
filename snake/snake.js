@@ -15,12 +15,12 @@ let game = new Vue({
     el: '#app',
     data: {
         // config
-        size: [20, 20],
-        nfoods: 2,
-        auto: true,
+        size: [config.size, config.size],
+        nfoods: config.nfood,
+        auto: config.auto,
 
         //state
-        title: '🐍snake🐍',
+        title: '🐍🐍🐍',
         end: false,
         movement: { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }, //possible movement
         moveIntent: undefined,
@@ -114,15 +114,9 @@ let game = new Vue({
                 if (!lookup.has(index)) { ++i }
                 ++index
             }
-
             while (lookup.has(index))++index;
 
             let pos = this.deflatten(index)
-
-            console.log(lookup)
-            console.log(index)
-            console.log(pos)
-
             return this.inside(pos) ? pos : undefined
         },
 
