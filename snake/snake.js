@@ -91,6 +91,11 @@ let game = new Vue({
         posEqual(p1, p2) { return this.flatten(p1) == this.flatten(p2) }
     },
     created() {
+        const move = () => {
+            if (this.moveIntent)
+                this.move(...this.moveIntent)
+        }
+        setInterval(move, 60)
     },
     mounted() {
         const { up, down, left, right } = this.movement;
