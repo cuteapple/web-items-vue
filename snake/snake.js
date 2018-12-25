@@ -3,8 +3,8 @@
     computed: {
         posStyle() {
             return {
-                gridColumn: this.x + 1,
-                gridRow: this.y + 1
+                'grid-column': this.x + 1,
+                'grid-row': this.y + 1
             }
         }
     },
@@ -21,28 +21,58 @@ let game = new Vue({
         head: [0, 0],
         /** [ [x,y] , [x2,y2] , ... ]  */
         body: [[0, 1], [0, 2], [1, 2]],
-        moveIntent: [0, 0],
         foods: [[5, 5]],
 
         movement: { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }, //possible movement
+        moveIntent: undefined,
     },
     computed: {
+        width() { return size[0] },
+        height() { return size[1] },
         gridStyle() {
-            const { size } = this
             return {
-                'grid-template-columns': `repeat(${size[0]},1fr)`,
-                'grid-template-rows': `repeat(${size[1]},1fr)`
+                'grid-template-columns': `repeat(${this.width},1fr)`,
+                'grid-template-rows': `repeat(${this.height},1fr)`
             }
         }
     },
     methods: {
-        move(dx, dy) { }
+        move(dx, dy) { },
+        randomEmptyGrid() {
+            let all = [].concat([this.head], this.body, this.foods)
+            let lookup = new Set(...all.map(p => this.flatten(p)))
+            let number_of_empty = this.width * this.height - lookup.size
+            let nempty = randomInt(number_of_empty)
+            let index = 0
+
+            while (nempty) {
+                if (!lookup.has(index)) {
+                    --nempty
+                }
+                ++index
+            }
+
+            return this.deflatten(index)
+        },
+
+        /** return y*width + x */
+        flatten(x, y) { return y * width + x },
+        /**
+         * get [x,y] from flattened index
+         * @param {Number} flatIndex index returned by flatten
+         */
+        deflatten(flatIndex) { return [Math.floor(flatIndex / this.width), flatIndex % this.width] }
     },
     created() {
+        const [w, h] = this.size
+        // random init pos
+        this.head = [randomInt(w), randomInt(h)]
 
+
+        // random foods
     },
     mounted() {
-        let { up, down, left, right } = this.movement;
+        const { up, down, left, right } = this.movement;
         RegisterGlobalArrowKeyHandler(
             () => this.moveIntent = up,//up
             () => this.moveIntent = down,//down
@@ -85,45 +115,6 @@ function randomInt(upper) {
     return Math.floor(Math.random() * upper)
 }
 
-class PlaygroundItem {
-    constructor(x, y) {
-        this.element = document.createElement('div')
-        this.x = x
-        this.y = y
-        playground.appendChild(this.element)
-    }
-
-    detech() {
-        playground.removeChild(this.element)
-    }
-
-    blink() {
-        this.element.classList.add('blink')
-    }
-
-    set x(value) { this._x = value; this.element.style.gridColumn = value + 1; }
-    get x() { return this._x; }
-    set y(value) { this._y = value; this.element.style.gridRow = value + 1; }
-    get y() { return this._y; }
-    set pos(p) { this.x = p[0]; this.y = p[1]; }
-    get pos() { return [this.x, this.y] }
-}
-
-class SnakeBody extends PlaygroundItem {
-    constructor(x, y, head = false) {
-        super(x, y)
-        this.element.classList.add("snake")
-        if (head) this.element.classList.add("head")
-        this.head = head
-    }
-}
-
-class Food extends PlaygroundItem {
-    constructor(x, y) {
-        super(x, y)
-        this.element.classList.add("food")
-    }
-}
 
 function randomEmptyGrid() {
     let map = []
