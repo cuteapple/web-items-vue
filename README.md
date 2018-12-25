@@ -38,8 +38,6 @@ difference:
 
  - support multiple foods
  - 🐍
-
-todo:
- - config(auto,size,nfoods,speed?)
+ - configurable
 
 ---
