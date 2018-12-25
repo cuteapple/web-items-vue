@@ -19,11 +19,12 @@
     </div>
     <div id="config-app">
         <button v-if="collapse" id="config-btn" @click="collapse = false">⚙️</button>
-        <section v-if="!collapse">
-            <label>size<input type="number" name="width" v-model.number="size"></label>
-            <label><input type="checkbox" name="movement" v-model="auto">automove</label>
-            <button @click="apply">✔️</button>
-            <button @click="cancel">❌</button>
+        <section id="config-form" v-if="!collapse">
+            <label style="display:block"><input type="number" name="width" v-model.number="size">↔️</label>
+            <label style="display:block"><input type="number" name="width" v-model.number="nfood">🍱</label>
+            <label><input v-show="false" type="checkbox" name="movement" v-model="auto">{{movementIcon}}</label>
+            <button style="float:right" @click="apply">✔️</button>
+            <button style="float:right" @click="cancel">❌</button>
         </section>
     </div>
 </body>

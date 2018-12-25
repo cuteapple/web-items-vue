@@ -15,9 +15,9 @@ let game = new Vue({
     el: '#app',
     data: {
         // config
-        size: [20, 20],
-        nfoods: 2,
-        auto: true,
+        size: [config.size, config.size],
+        nfoods: config.nfood,
+        auto: config.auto,
 
         //state
         title: '🐍🐍🐍',
