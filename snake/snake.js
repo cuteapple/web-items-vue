@@ -17,7 +17,7 @@ let game = new Vue({
         // config
         size: [20, 20],
         nfoods: 2,
-        auto: false,
+        auto: true,
 
         //state
         title: '🐍snake🐍',
