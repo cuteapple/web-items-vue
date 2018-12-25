@@ -38,6 +38,7 @@ let game = new Vue({
     },
     methods: {
         move(dx, dy) { },
+
         /** return pos to random empty cell */
         randomEmptyGrid() {
             let all = [].concat([this.head], this.body, this.foods)
@@ -52,12 +53,12 @@ let game = new Vue({
                 }
                 ++index
             }
-
             return this.deflatten(index)
         },
 
         /** return y*width + x */
         flatten(x, y) { return y * width + x },
+
         /** get [x,y] from flattened index */
         deflatten(flatIndex) { return [Math.floor(flatIndex / this.width), flatIndex % this.width] }
     },
@@ -89,7 +90,6 @@ let game = new Vue({
  * @param {()=>void} right handler for right key down event
  */
 function RegisterGlobalArrowKeyHandler(up, down, left, right) {
-    //cuteapple@github 2018
     document.addEventListener('keydown', handler)
     function handler(ev) {
         let target;
@@ -111,35 +111,4 @@ function RegisterGlobalArrowKeyHandler(up, down, left, right) {
  */
 function randomInt(upper) {
     return Math.floor(Math.random() * upper)
-}
-
-
-function randomEmptyGrid() {
-    let map = []
-    for (let x = 0; x < width; ++x) {
-        map[x] = []
-    }
-
-    for (let s of body) {
-        let [x, y] = s.pos
-        map[x][y] = true
-    }
-
-    for (let s of foods) {
-        let [x, y] = s.pos
-        map[x][y] = true
-    }
-
-    let fill = body.length + foods.length;
-    let empty = width * height - fill;
-
-    let n = Math.floor(Math.random() * empty) + 1
-    for (let x = 0; x < width; ++x) {
-        for (let y = 0; y < height; ++y) {
-            if (!map[x][y]) {
-                --n;
-                if (n == 0) return [x, y]
-            }
-        }
-    }
 }
