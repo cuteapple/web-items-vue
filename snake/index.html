@@ -9,8 +9,12 @@
 <body>
     <div id="app">
         <div id="hint">{{hint}}</div>
-        <div id="playground"></div>
-        <button onclick="window.location.reload()">RELOAD</button>
+        <div id="playground" :style="gridStyle">
+            <grid-div class="snake head" :x="head[0]" :y="head[1]"></grid-div>
+            <grid-div class="snake body" v-for="(p,i) in body" :key="'body'+i" :x="p[0]" :y="p[1]"></grid-div>
+            <grid-div class="food" v-for="(p,i) in foods" :key="'food'+i" :x="p[0]" :y="p[1]"></grid-div>
+        </div>
+        <button id="reload" onclick="window.location.reload()">RELOAD</button>
     </div>
 </body>
 </html>

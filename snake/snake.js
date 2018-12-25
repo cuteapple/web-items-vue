@@ -1,21 +1,45 @@
-﻿let game = new Vue({
+﻿Vue.component('grid-div', {
+    props: ['x', 'y'],
+    computed: {
+        posStyle() {
+            return {
+                gridColumn: this.x + 1,
+                gridRow: this.y + 1
+            }
+        }
+    },
+    template: `<div :style="posStyle"/>`
+})
+
+let game = new Vue({
     el: '#app',
     data: {
         hint: '🐍snake🐍😵🍱🎉',
-        
-        /**
-         * [ [x,y] , [x2,y2] , ... ]
-         */
-        body: [[0, 0]],
+        end: false,
+        size: [50, 50],
+
+        head: [0, 0],
+        /** [ [x,y] , [x2,y2] , ... ]  */
+        body: [[0, 1], [0, 2], [1, 2]],
         moveIntent: [0, 0],
-        end = false
+        foods: [[5, 5]],
+
+        movement: { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }, //possible movement
     },
-    computed: {},
+    computed: {
+        gridStyle() {
+            const { size } = this
+            return {
+                'grid-template-columns': `repeat(${size[0]},1fr)`,
+                'grid-template-rows': `repeat(${size[1]},1fr)`
+            }
+        }
+    },
     methods: {
-        move(dx, dy) {}
+        move(dx, dy) { }
     },
     created() {
-        
+
     },
     mounted() {
         let { up, down, left, right } = this.movement;
