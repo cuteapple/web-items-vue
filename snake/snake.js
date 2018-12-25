@@ -16,9 +16,9 @@ let game = new Vue({
     data: {
         title: '🐍snake🐍',
         end: false,
-        size: [50, 50],
+        size: [3, 3],
 
-        head: [25, 25],
+        head: [0, 0],
         /** [ [x,y] , [x2,y2] , ... ]  */
         body: [],
         /** [ [x,y] , [x2,y2] , ... ]  */
@@ -56,7 +56,7 @@ let game = new Vue({
                 return this.move(-dx, -dy)
             }
 
-            if (!this.inside(...newPos)) {
+            if (!this.inside(newPos)) {
                 this.end = '😵'
                 return
             }
@@ -91,34 +91,43 @@ let game = new Vue({
         /** return pos to random empty cell */
         randomEmptyGrid() {
             let all = [].concat([this.head], this.body, this.foods)
-            let lookup = new Set(...all.map(p => this.flatten(p)))//use array to get O(n) //this **can** be cached and incrementally update
+            let lookup = new Set(all.map(p => this.flatten(p)))//use array to get O(n) //this **can** be cached and incrementally update
             let number_of_empty = this.width * this.height - lookup.size
             let nempty = randomInt(number_of_empty)
             let index = 0
 
-            while (nempty) {
-                if (!lookup.has(index)) { --nempty }
+            for (let i = 0; i < nempty;) {
+                if (!lookup.has(index)) { ++i }
                 ++index
             }
 
+            while (lookup.has(index))++index;
+
             let pos = this.deflatten(index)
-            return this.inside(...pos) ? pos : undefined
+
+            console.log(lookup)
+            console.log(index)
+            console.log(pos)
+
+            return this.inside(pos) ? pos : undefined
         },
 
         /** return y*width + x */
-        flatten(x, y) { return y * this.width + x },
+        flatten([x, y]) { return y * this.width + x },
 
         /** get [x,y] from flattened index */
-        deflatten(flatIndex) { return [Math.floor(flatIndex / this.width), flatIndex % this.width] },
+        deflatten(flatIndex) { return [flatIndex % this.width, Math.floor(flatIndex / this.width)] },
 
         /** check equality of two position */
         posEqual(p1, p2) { return this.flatten(p1) == this.flatten(p2) },
 
-        /** check if pos is inside game area */
-        inside(x, y) { return x >= 0 && x < this.width && y >= 0 && y < this.height }
+        /** check if position is inside game area */
+        inside([x, y]) { return x >= 0 && x < this.width && y >= 0 && y < this.height }
     },
     created() {
-        this.foods = Array(this.nfoods).fill().map(() => this.randomEmptyGrid())
+        for (let i = 0; i < this.nfoods; ++i) {
+            this.foods.push(this.randomEmptyGrid())
+        }
     },
     mounted() {
         const { up, down, left, right } = this.movement;
@@ -133,7 +142,9 @@ let game = new Vue({
             if (this.moveIntent)
                 this.move(...this.moveIntent)
         }
-        setInterval(move, 60)
+        //setInterval(move, 100)
+
+        RegisterGlobalArrowKeyHandler(move, move, move, move);
     }
 })
 
