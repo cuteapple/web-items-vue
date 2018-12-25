@@ -27,8 +27,8 @@ let game = new Vue({
         moveIntent: undefined,
     },
     computed: {
-        width() { return size[0] },
-        height() { return size[1] },
+        width() { return this.size[0] },
+        height() { return this.size[1] },
         gridStyle() {
             return {
                 'grid-template-columns': `repeat(${this.width},1fr)`,
@@ -38,9 +38,10 @@ let game = new Vue({
     },
     methods: {
         move(dx, dy) { },
+        /** return pos to random empty cell */
         randomEmptyGrid() {
             let all = [].concat([this.head], this.body, this.foods)
-            let lookup = new Set(...all.map(p => this.flatten(p)))
+            let lookup = new Set(...all.map(p => this.flatten(p)))//use array to get O(n) //this **can** be cached and incrementally update
             let number_of_empty = this.width * this.height - lookup.size
             let nempty = randomInt(number_of_empty)
             let index = 0
@@ -57,10 +58,7 @@ let game = new Vue({
 
         /** return y*width + x */
         flatten(x, y) { return y * width + x },
-        /**
-         * get [x,y] from flattened index
-         * @param {Number} flatIndex index returned by flatten
-         */
+        /** get [x,y] from flattened index */
         deflatten(flatIndex) { return [Math.floor(flatIndex / this.width), flatIndex % this.width] }
     },
     created() {
