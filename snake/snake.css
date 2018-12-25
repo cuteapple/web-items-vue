@@ -24,10 +24,12 @@
 
     .snake.head {
         background-color: red;
+        z-index:100;
     }
 
 .food {
     background-color: orange;
+    border-radius: 30% 30%;
 }
 
 @keyframes blink {

@@ -85,6 +85,16 @@ let game = new Vue({
             }
             this.head = newPos
 
+            //eating self
+            for (let i = 0; i < this.body.length; ++i) {
+                let body = this.body[i]
+                if (this.posEqual(newPos, body)) {
+                    this.end = '😵'
+                    return;
+                }
+            }
+
+
             //no space and food !!
             if (this.body.length == this.width * this.height - 1) {
                 this.end = '🍱'
