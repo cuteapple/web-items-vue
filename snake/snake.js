@@ -41,9 +41,10 @@ let game = new Vue({
             let [x, y] = this.head
             let newPos = [x + dx, y + dy]
 
-            //move back is noop
+            //move back is not allowed
             if (this.body.length && this.posEqual(newPos, this.body[0])) {
-                return
+                //keep going
+                return this.move(-dx, -dy)
             }
 
             //eating foods
@@ -73,9 +74,7 @@ let game = new Vue({
             let index = 0
 
             while (nempty) {
-                if (!lookup.has(index)) {
-                    --nempty
-                }
+                if (!lookup.has(index)) { --nempty }
                 ++index
             }
             return this.deflatten(index)
