@@ -114,15 +114,9 @@ let game = new Vue({
                 if (!lookup.has(index)) { ++i }
                 ++index
             }
-
             while (lookup.has(index))++index;
 
             let pos = this.deflatten(index)
-
-            console.log(lookup)
-            console.log(index)
-            console.log(pos)
-
             return this.inside(pos) ? pos : undefined
         },
 
