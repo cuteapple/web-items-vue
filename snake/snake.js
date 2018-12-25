@@ -14,20 +14,23 @@
 let game = new Vue({
     el: '#app',
     data: {
+        // config
+        size: [20, 20],
+        nfoods: 2,
+        auto: false,
+
+        //state
         title: '🐍snake🐍',
         end: false,
-        size: [3, 3],
+        movement: { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }, //possible movement
+        moveIntent: undefined,
 
-        head: [0, 0],
+        //grid
+        head: [100000, 100000],
         /** [ [x,y] , [x2,y2] , ... ]  */
         body: [],
         /** [ [x,y] , [x2,y2] , ... ]  */
         foods: [],
-
-        nfoods: 3,
-
-        movement: { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }, //possible movement
-        moveIntent: undefined,
     },
     computed: {
 
@@ -65,7 +68,7 @@ let game = new Vue({
             for (let i = 0; i < this.foods.length; ++i) {
                 let food = this.foods[i]
                 if (this.posEqual(newPos, food)) {
-                    this.body.push([...food])//the exact posision is not important, would erased by body move
+                    this.body.push([...food])//the exact posision is not important, would erased when move on
                     let new_food = this.randomEmptyGrid()
                     if (new_food)
                         this.foods.splice(i, 1, new_food)
@@ -82,6 +85,7 @@ let game = new Vue({
             }
             this.head = newPos
 
+            //no space and food !!
             if (this.body.length == this.width * this.height - 1) {
                 this.end = '🍱'
                 return
@@ -125,6 +129,7 @@ let game = new Vue({
         inside([x, y]) { return x >= 0 && x < this.width && y >= 0 && y < this.height }
     },
     created() {
+        this.head = this.randomEmptyGrid()
         for (let i = 0; i < this.nfoods; ++i) {
             this.foods.push(this.randomEmptyGrid())
         }
@@ -142,9 +147,10 @@ let game = new Vue({
             if (this.moveIntent)
                 this.move(...this.moveIntent)
         }
-        //setInterval(move, 100)
-
-        RegisterGlobalArrowKeyHandler(move, move, move, move);
+        if (this.auto)
+            setInterval(move, 100)
+        else
+            RegisterGlobalArrowKeyHandler(move, move, move, move);
     }
 })
 
