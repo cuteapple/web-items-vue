@@ -20,7 +20,7 @@ let game = new Vue({
         auto: true,
 
         //state
-        title: '🐍snake🐍',
+        title: '🐍🐍🐍',
         end: false,
         movement: { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }, //possible movement
         moveIntent: undefined,
