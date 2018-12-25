@@ -20,7 +20,7 @@ let game = new Vue({
 
         head: [0, 0],
         /** [ [x,y] , [x2,y2] , ... ]  */
-        body: [[0, 1], [0, 2], [1, 2]],
+        body: [],
         foods: [[5, 5]],
 
         movement: { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }, //possible movement
@@ -37,7 +37,32 @@ let game = new Vue({
         }
     },
     methods: {
-        move(dx, dy) { },
+        move(dx, dy) {
+            let [x, y] = this.head
+            let newPos = [x + dx, y + dy]
+
+            //move back is noop
+            if (this.body.length && this.posEqual(newPos, this.body[0])) {
+                return
+            }
+
+            //eating foods
+            for (let food of this.foods) {
+                if (this.posEqual(newPos, food)) {
+                    this.body.push([...food])//the exact posision is not important, would erased by body move
+                    let new_food = this.randomEmptyGrid()
+                    food[0] = new_food[0]
+                    food[1] = new_food[1]
+                    this.foods = [...this.foods]//trigger update
+                }
+            }
+
+            //move on
+            if (this.body.length) {
+                this.body = [this.head, ...this.body.slice(0, -1)]
+            }
+            this.head = newPos
+        },
 
         /** return pos to random empty cell */
         randomEmptyGrid() {
@@ -57,26 +82,23 @@ let game = new Vue({
         },
 
         /** return y*width + x */
-        flatten(x, y) { return y * width + x },
+        flatten(x, y) { return y * this.width + x },
 
         /** get [x,y] from flattened index */
-        deflatten(flatIndex) { return [Math.floor(flatIndex / this.width), flatIndex % this.width] }
+        deflatten(flatIndex) { return [Math.floor(flatIndex / this.width), flatIndex % this.width] },
+
+        /** check equality of two position */
+        posEqual(p1, p2) { return this.flatten(p1) == this.flatten(p2) }
     },
     created() {
-        const [w, h] = this.size
-        // random init pos
-        this.head = [randomInt(w), randomInt(h)]
-
-
-        // random foods
     },
     mounted() {
         const { up, down, left, right } = this.movement;
         RegisterGlobalArrowKeyHandler(
-            () => this.moveIntent = up,//up
-            () => this.moveIntent = down,//down
-            () => this.moveIntent = left,//left
-            () => this.moveIntent = right//right
+            () => { this.moveIntent = up },//up
+            () => { this.moveIntent = down },//down
+            () => { this.moveIntent = left },//left
+            () => { this.moveIntent = right }//right
         )
     }
 })
