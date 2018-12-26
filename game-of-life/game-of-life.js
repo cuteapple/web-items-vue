@@ -1,5 +1,5 @@
 Vue.component('game-of-life', {
-    props: ['width', 'height', 'scale'],
+    props: ['width', 'height'],
 
     data: () => ({
         map: [[]], //fill when created
@@ -10,9 +10,7 @@ Vue.component('game-of-life', {
         style() {
             return {
                 'grid-template-columns': `repeat(${this.width},1fr)`,
-                'grid-template-rows': `repeat(${this.height},1fr)`,
-                //height: `${this.height * this.scale}px`,
-                //width: `${this.height * this.scale}px`
+                'grid-template-rows': `repeat(${this.height},1fr)`
             }
         },
     },
@@ -102,5 +100,5 @@ class GameOfLife {
 
 const game = new Vue({
     el: '#app',
-    data: { width: 10, height: 10, scale: 5 }
+    data: { width: 20, height: 20 }
 })
