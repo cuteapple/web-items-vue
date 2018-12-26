@@ -7,6 +7,15 @@ lerning vue by port [my vanilla repo](https://github.com/cuteapple/web-items) to
 
 ---
 
+
+- the only library is *vue.js*
+
+- easy, simple and clean code
+
+- welcome for topic suggestion
+
+---
+
 - [ooxx](https://cuteapple.github.io/web-items-vue/ooxx/)
 
 <img src="ooxx/cover.png" width="256">
