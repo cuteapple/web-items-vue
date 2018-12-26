@@ -24,7 +24,7 @@ Vue.component('game-of-life', {
     created() {
         this.game_of_life = new GameOfLife(this.width, this.height)
         this.update()
-        this.timer = new AnimationInterval(() => this.update(),100)
+        this.timer = new AnimationInterval(() => this.update(), 100)
     }
 })
 
@@ -102,3 +102,5 @@ const game = new Vue({
     el: '#app',
     data: { width: 20, height: 20 }
 })
+
+

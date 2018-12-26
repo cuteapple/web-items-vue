@@ -12,15 +12,13 @@
         <game-of-life v-bind="{width,height}"></game-of-life>
     </section>
     <section id="options">
-        <label>
-            size
-            <input type="number" />
-        </label>
-        <label>
-            frameskip
-            <input type="number" />
-        </label>
-        <button @click="">apply</button>
+        <label for="size">size</label>
+        <input type="number" name="size" v-model="size" />
+        <label for="frameskip">frameskip</label>
+        <input type="number" name="frameskip" v-model="frameskip" />
+        <label for="fps">fps</label>
+        <input type="number" name="fps" v-model="fps" />
+        <button style="grid-column-start:1;grid-column-end:3">apply</button>
     </section>
 </body>
 </html>
