@@ -50,3 +50,15 @@ difference:
  - configurable
 
 ---
+
+- [game of life](https://cuteapple.github.io/web-items-vue/game-of-life/)
+
+<img src="game-of-life/cover.png" width="256">
+
+difference:
+
+ - configurable
+
+core classes are reused, no much difference from vanilla one
+
+---
