@@ -19,7 +19,7 @@ Vue.component('game-of-life', {
     methods: {
         update() {
             for (let i = 0; i <= this.frameskip; ++i) {
-                this.game_of_life.nextEpoch()
+                this.game_of_life.nextEpoch() //TODO: move to worker to keep animation-frame fast
             }
             this.map = [].concat(...this.game_of_life.grid)
         }
