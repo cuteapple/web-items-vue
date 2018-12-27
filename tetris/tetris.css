@@ -21,9 +21,9 @@ html {
     background-color: black;
     border-width: 3px;
     border-style: solid;
-    /*animation: border-hsl-ring 60s linear infinite*/ /*control by css.js*/
+    animation: border-hsl-ring 30s linear infinite /*control by css.js*/
 }
-/*
+
 @keyframes border-hsl-ring {
     0% {
         border-color: hsl(0, 100%, 50%)
@@ -53,7 +53,7 @@ html {
         border-color: hsl(360, 100%, 50%)
     }
 }
-    */
+    
 .anchor {
     display: none; /*do not show anchor*/
     z-index: 1;

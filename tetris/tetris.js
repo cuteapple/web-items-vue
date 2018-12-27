@@ -54,15 +54,11 @@ let game = new Vue({
             }
 
         },
-        borderStyle() {
-            return {}
-        }
     }
 })
 
 function init() {
     playground = document.getElementById('playground')
-    apply_cssjs(playground, width, height)
 
     fall_timer = setInterval(MoveDownOrNewOrEnd, fall_interval)
 
