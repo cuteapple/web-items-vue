@@ -1,5 +1,4 @@
 ﻿let playground
-let controller = new controller4()
 let width = 12
 let height = 30
 /** micro seconds to fall down one block */
@@ -39,20 +38,32 @@ function set_grid(x, y, block) {
     return inside_grid(x, y) && (grids[x + y * width] = block)
 }
 
-function init() {
 
+let game = new Vue({
+    el: "#playground",
+    data: { width, height },
+    computed: {
+        staticStyle() {
+            const { width, height } = matchWindowSize(this.width, this.height, 1.0)
+
+            return {
+                gridTemplateRows: `repeat(${this.height},1fr)`,
+                gridTemplateColumns: `repeat(${this.width},1fr)`,
+                width: `${width}px`,
+                height: `${height}px`
+            }
+
+        },
+        borderStyle() {
+            return {}
+        }
+    }
+})
+
+function init() {
     playground = document.getElementById('playground')
     apply_cssjs(playground, width, height)
 
-    //set up grid
-    playground.style.gridTemplateRows = `repeat(${height},1fr)`
-    playground.style.gridTemplateColumns = `repeat(${width},1fr)`
-
-    //start game loop
-    controller.left = () => TryMove(-1, 0)
-    controller.up = () => TryRotate()
-    controller.right = () => TryMove(1, 0)
-    controller.down = () => Down()
     fall_timer = setInterval(MoveDownOrNewOrEnd, fall_interval)
 
     activeBlocks_anchor = new GridItem(0, 0, playground)
@@ -220,3 +231,5 @@ function RandomTetris() {
     let choice = Object.keys(tetris_blocks)
     return tetris_blocks[choice[Math.floor(Math.random() * choice.length)]]
 }
+
+init()

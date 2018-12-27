@@ -2,12 +2,15 @@
 <html>
 <head>
     <title>tetris</title>
+    <script src="vue.js" defer></script>
+
     <link href="tetris.css" type="text/css" rel="stylesheet" />
-    <script src="../controllers/4way.js"></script>
+
+    <script src="utility.js" defer></script>
     <script src="css.js" defer></script>
     <script src="tetris.js" defer></script>
 </head>
 <body>
-    <div id="playground"></div>
+    <div id="playground" :style="[borderStyle,staticStyle]"></div>
 </body>
 </html>

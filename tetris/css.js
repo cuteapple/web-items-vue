@@ -6,7 +6,6 @@
  * @param {number} height number of rows in playground
  */
 function apply_cssjs(playground, width, height) {
-
     //border_animation
     //since css animation takes too much CPU
     {
@@ -24,25 +23,29 @@ function apply_cssjs(playground, width, height) {
             playground.style.borderColor = `hsl(${icolor},100%,50%)`
         }, interval)
     }
+}
 
-    //playground size
-    {
-        const max_ratio = 1.0
+/**
+ * scale size to match screensize*max_ratio
+ * @param {Number} width current width
+ * @param {Number} height current height
+ * @param {Number} max_ratio max occupy ratio, default to 1.0
+ */
+function matchWindowSize(width, height, max_ratio) {
+    max_ratio = max_ratio || 1.0
 
-        const scwidth = window.innerWidth
-            || document.documentElement.clientWidth
-            || document.body.clientWidth;
+    const scwidth = window.innerWidth
+        || document.documentElement.clientWidth
+        || document.body.clientWidth;
 
-        const scheight = window.innerHeight
-            || document.documentElement.clientHeight
-            || document.body.clientHeight;
+    const scheight = window.innerHeight
+        || document.documentElement.clientHeight
+        || document.body.clientHeight;
 
-        //adjust width and height of playground
-        let sw = scwidth / width //pixel width per unit
-        let sh = scheight / height //pixel height per unit
+    //adjust width and height of playground
+    let sw = scwidth / width //pixel width per unit
+    let sh = scheight / height //pixel height per unit
 
-        let s = Math.min(sw, sh) * max_ratio
-        playground.style.width = `${Math.floor(s * width)}px`
-        playground.style.height = `${Math.floor(s * height)}px`
-    }
+    let s = Math.min(sw, sh) * max_ratio
+    return { width: Math.floor(s * width), height: Math.floor(s * height)}
 }
