@@ -100,7 +100,7 @@ class GameOfLife {
 
 const game = new Vue({
     el: '#app',
-    data: { width: 20, height: 20 }
+    data: getConfig()
 })
 
 
