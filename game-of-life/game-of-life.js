@@ -1,5 +1,5 @@
 Vue.component('game-of-life', {
-    props: ['width', 'height'],
+    props: ['size', 'fps', 'frameskip'],
 
     data: () => ({
         map: [[]], //fill when created
@@ -7,6 +7,8 @@ Vue.component('game-of-life', {
     }),
 
     computed: {
+        width() { return this.size },
+        height() { return this.size },
         style() {
             return {
                 'grid-template-columns': `repeat(${this.width},1fr)`,
@@ -16,7 +18,9 @@ Vue.component('game-of-life', {
     },
     methods: {
         update() {
-            this.game_of_life.nextEpoch()
+            for (let i = 0; i <= this.frameskip; ++i) {
+                this.game_of_life.nextEpoch()
+            }
             this.map = [].concat(...this.game_of_life.grid)
         }
     },
@@ -24,7 +28,7 @@ Vue.component('game-of-life', {
     created() {
         this.game_of_life = new GameOfLife(this.width, this.height)
         this.update()
-        this.timer = new AnimationInterval(() => this.update(), 100)
+        this.timer = new AnimationInterval(() => this.update(), 1000/this.fps)
     }
 })
 
