@@ -23,9 +23,27 @@
 }
 
     .cell[data-status="0"] {
-        opacity:0;
+        opacity: 0;
     }
 
     .cell[data-status="1"] {
-        background-color:aquamarine;
+        background-color: aquamarine;
+    }
+
+#options {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    border: 2px solid lightgray;
+    padding: 2px;
+    border-radius: 2px;
+    background-color: snow;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 2px
+}
+
+    #options .full-row {
+        grid-column-start: 1;
+        grid-column-end: 3
     }

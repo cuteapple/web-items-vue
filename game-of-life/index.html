@@ -5,11 +5,22 @@
     <link href="game-of-life.css" type="text/css" rel="stylesheet" />
 
     <script src="vue.js" defer></script>
+    <script src="config.js" defer></script>
     <script src="game-of-life.js" defer></script>
 </head>
 <body>
     <section id="app">
-        <game-of-life v-bind="{width,height,scale}"></game-of-life>
+        <game-of-life v-bind="{size,frameskip,fps}"></game-of-life>
+    </section>
+    <section id="options">
+        <label for="size">size</label>
+        <input type="number" name="size" v-model.number="size" />
+        <label for="frameskip">frameskip</label>
+        <input type="number" name="frameskip" v-model.number="frameskip" />
+        <label for="fps">fps</label>
+        <input type="number" name="fps" v-model.number="fps" />
+        <button class="full-row" @click="apply">apply</button>
+        <button class="full-row" @click="applyDefault">default</button>
     </section>
 </body>
 </html>
