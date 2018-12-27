@@ -45,21 +45,26 @@ let game = new Vue({
     computed: {
         staticStyle() {
             const { width, height } = matchWindowSize(this.width, this.height, 1.0)
-
             return {
                 gridTemplateRows: `repeat(${this.height},1fr)`,
                 gridTemplateColumns: `repeat(${this.width},1fr)`,
                 width: `${width}px`,
                 height: `${height}px`
             }
-
         },
     }
 })
 
 function init() {
     playground = document.getElementById('playground')
-
+    
+    RegisterGlobalArrowKeyHandler(
+        () => TryRotate(),
+        () => MoveDownOrNewOrEnd(),
+        () => TryMove(-1, 0),
+        () => TryMove(1, 0)
+    )
+    
     fall_timer = setInterval(MoveDownOrNewOrEnd, fall_interval)
 
     activeBlocks_anchor = new GridItem(0, 0, playground)
