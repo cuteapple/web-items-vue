@@ -38,11 +38,21 @@ function set_grid(x, y, block) {
     return inside_grid(x, y) && (grids[x + y * width] = block)
 }
 
+Vue.component('grid-item', {
+    props: ['x', 'y', 'color'],
+    template: `<div :style=" { gridColumn: x+1, gridRow: y+1, backgroundColor: color} "/>`
+})
+
+
 
 let game = new Vue({
     el: "#playground",
-    data: { width, height },
+    data: { width, height, state:0 },
     computed: {
+        grids() {
+            const update = this.state;
+            return [].concat(grids, activeBlocks)
+        },
         staticStyle() {
             const { width, height } = matchWindowSize(this.width, this.height, 1.0)
             return {
@@ -57,18 +67,21 @@ let game = new Vue({
 
 function init() {
     playground = document.getElementById('playground')
-    
-    RegisterGlobalArrowKeyHandler(
-        () => TryRotate(),
-        () => MoveDownOrNewOrEnd(),
-        () => TryMove(-1, 0),
-        () => TryMove(1, 0)
-    )
-    
-    fall_timer = setInterval(MoveDownOrNewOrEnd, fall_interval)
 
-    activeBlocks_anchor = new GridItem(0, 0, playground)
-    activeBlocks_anchor.element.classList.add('anchor')
+    function update() {
+        ++game.state
+    }
+
+    RegisterGlobalArrowKeyHandler(
+        () => { TryRotate(), update() },
+        () => { MoveDownOrNewOrEnd(), update() },
+        () => { TryMove(-1, 0), update() },
+        () => { TryMove(1, 0), update() }
+    )
+
+    fall_timer = setInterval(() => { MoveDownOrNewOrEnd(), update() }, fall_interval)
+
+    activeBlocks_anchor = new GridItem(0, 0)
     GenerateBlocks(RandomTetris(), Math.floor(width / 2 - 1), 0)
 }
 
@@ -95,7 +108,6 @@ function CheckRows() {
     for (let y of remove_rows) {
         //remove
         for (let x of columns) {
-            get_grid(x, y).detech()
             set_grid(x, y, undefined)
         }
         for (let i = 0; i < y; ++i) {
@@ -174,30 +186,21 @@ function TryMove(dx, dy) {
 }
 
 class GridItem {
-    constructor(x, y, parent) {
-        this.element = document.createElement('div')
+    constructor(x, y, color) {
         this.x = x
         this.y = y
-        this.parent = parent
-        parent.appendChild(this.element)
+        this.color = color
+        this.id = GridItem.currentID++;
     }
 
-    attach() {
-        this.parent.appendChild(this.element)
-    }
-
-    detech() {
-        this.parent.removeChild(this.element)
-    }
-
-    set x(value) { this._x = value; this.element.style.gridColumn = value + 1; }
+    set x(value) { this._x = value; }
     get x() { return this._x; }
-    set y(value) { this._y = value; this.element.style.gridRow = value + 1; }
+    set y(value) { this._y = value; }
     get y() { return this._y; }
     set pos(p) { this.x = p[0]; this.y = p[1]; }
     get pos() { return [this.x, this.y] }
 }
-
+GridItem.currentID = 0;
 
 /**
  * generate blocks onto *x* and *y*, regardless of existed blocks
@@ -209,8 +212,7 @@ class GridItem {
 function GenerateBlocks(template, x, y, color) {
     color = color || `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`
 
-    activeBlocks = template.map(([dx, dy]) => new GridItem(x + dx, y + dy, playground))
-    activeBlocks.forEach(b => b.element.style.backgroundColor = color)
+    activeBlocks = template.map(([dx, dy]) => new GridItem(x + dx, y + dy, color))
     activeBlocks_anchor.pos = [x, y]
 }
 
