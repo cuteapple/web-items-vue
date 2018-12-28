@@ -65,3 +65,11 @@ difference:
 this is skipped because vue would change almost nothing.
 
 ---
+
+# [tetris](https://cuteapple.github.io/web-items-vue/tetris/)
+
+<img src="tetris/cover.png" width="256">
+
+ - no much difference
+
+---
