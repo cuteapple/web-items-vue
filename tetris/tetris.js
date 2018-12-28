@@ -1,4 +1,6 @@
-﻿let width = 12
+﻿//feel free to move this hole file into a function to be *modulelize*, I'd like to KISS
+
+let width = 12
 let height = 30
 /** micro seconds to fall down one block */
 let fall_interval = 300
@@ -21,64 +23,49 @@ let activeBlocks_anchor
  */
 let grids = []
 
-function outside_grid(x, y) {
-    return x < 0 || x >= width || y < 0 || y >= height
-}
-
-function inside_grid(x, y) {
-    return !outside_grid(x, y)
-}
-
-function get_grid(x, y) {
-    return inside_grid(x, y) && grids[x + y * width]
-}
-
-function set_grid(x, y, block) {
-    return inside_grid(x, y) && (grids[x + y * width] = block)
-}
+function outside_grid(x, y) { return x < 0 || x >= width || y < 0 || y >= height }
+function inside_grid(x, y) { return !outside_grid(x, y) }
+function get_grid(x, y) { return inside_grid(x, y) && grids[x + y * width] }
+function set_grid(x, y, block) { return inside_grid(x, y) && (grids[x + y * width] = block) }
 
 Vue.component('grid-item', {
     props: ['x', 'y', 'color'],
     template: `<div :style=" { gridColumn: x+1, gridRow: y+1, backgroundColor: color} "/>`
 })
 
-
-
-let game = new Vue({
+let renderer = new Vue({
     el: "#playground",
-    data: { width, height, state:0 },
+    data: { state: 0 },
     computed: {
         grids() {
             const update = this.state;
             return [].concat(grids, activeBlocks)
         },
         staticStyle() {
-            const { width, height } = matchWindowSize(this.width, this.height, 1.0)
+            const [vw, vh] = matchWindowSize(width, height, 1.0)
             return {
-                gridTemplateRows: `repeat(${this.height},1fr)`,
-                gridTemplateColumns: `repeat(${this.width},1fr)`,
-                width: `${width}px`,
-                height: `${height}px`
+                gridTemplateRows: `repeat(${height},1fr)`,
+                gridTemplateColumns: `repeat(${width},1fr)`,
+                width: `${vw}px`,
+                height: `${vh}px`
             }
         },
+    },
+    methods: {
+        update() { ++this.state; }
     }
 })
 
 function init() {
-    playground = document.getElementById('playground')
-
-    function update() {
-        ++game.state
-    }
 
     RegisterGlobalArrowKeyHandler(
-        () => { TryRotate(), update() },
-        () => { MoveDownOrNewOrEnd(), update() },
-        () => { TryMove(-1, 0), update() },
-        () => { TryMove(1, 0), update() }
+        () => { TryRotate(); renderer.update(); },
+        () => { MoveDownOrNewOrEnd(); renderer.update(); },
+        () => { TryMove(-1, 0); renderer.update() },
+        () => { TryMove(1, 0); renderer.update() }
     )
 
-    fall_timer = setInterval(() => { MoveDownOrNewOrEnd(), update() }, fall_interval)
+    fall_timer = setInterval(() => { MoveDownOrNewOrEnd(); renderer.update() }, fall_interval)
 
     activeBlocks_anchor = new GridItem(0, 0)
     GenerateBlocks(RandomTetris(), Math.floor(width / 2 - 1), 0)
@@ -123,6 +110,8 @@ function CheckRows() {
             block.y += dy[y]
         }
     }
+
+    return remove_rows
 }
 
 function End() {

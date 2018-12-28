@@ -44,7 +44,7 @@ function matchWindowSize(width, height, max_ratio) {
     let sh = scheight / height //pixel height per unit
 
     let s = Math.min(sw, sh) * max_ratio
-    return { width: Math.floor(s * width), height: Math.floor(s * height) }
+    return [Math.floor(s * width), Math.floor(s * height)]
 }
 
 
