@@ -34,21 +34,22 @@ function set_grid(x, y, block) { return inside_grid(x, y) && (grids[x + y * widt
 
 function MoveDownOrNewOrEnd() {
     let success = TryMove(0, 1)
-    if (success) return true
 
-    //freeze this block
+    //success fall, no need to do checks
+    if (success) return
+
+    
+    //freeze active Blocks
     activeBlocks.forEach(x => set_grid(x.x, x.y, x))
+
+    //check filled rows
     CheckRows()
 
     //if touch top, end
-    if (activeBlocks.find(x => x.y < 1)) {
-        End()
-        return false
-    }
+    if (activeBlocks.find(x => x.y < 1)) { activeBlocks = []; End(); return }
 
     //generate new active block
-    GenerateBlocks(Math.floor(Math.random(width / 3) + width / 2 - 1), 0)
-    return false
+    GenerateActiveBlocks(Math.floor(Math.random(width / 3) + width / 2 - 1), 0)
 }
 
 //check and remove filled rows (only check rows effected by activeBlocks)
@@ -57,6 +58,8 @@ function CheckRows() {
     const columns = Array(width).fill().map((x, i) => i) //[1,2,...,width-1]
     let remove_rows = target_rows.filter(y => columns.every(x => get_grid(x, y) instanceof GridItem))
     let dy = Array(height).fill(0)
+
+    //remove and calculate deltas
     for (let y of remove_rows) {
         //remove
         for (let x of columns) {
@@ -67,6 +70,7 @@ function CheckRows() {
         }
     }
 
+    //apply deltas (block *falls*)
     for (let y = height - 1; y >= 0; --y) {
         for (let x of columns) {
             let block = get_grid(x, y)
@@ -134,12 +138,12 @@ GridItem.currentID = 0;
 
 /**
  * generate blocks onto *x* and *y*, regardless of existed blocks
- * @param {tetris_template} template template for new blocks
  * @param {number} x upperleft-x 
  * @param {number} y upperleft-y
- * @param {string} color css color string or false value for random color
+ * @param {string} [color] css color string
+ * @param {tetris_template} [template] template for new blocks
  */
-function GenerateBlocks(x, y, template, color) {
+function GenerateActiveBlocks(x, y, template, color) {
     template = template || RandomTetrisTemplate()
     color = color || `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`
 
@@ -170,7 +174,7 @@ function RandomTetrisTemplate() {
 /// start game
 ///
 
-GenerateBlocks(Math.floor(width / 2 - 1), 0)
+GenerateActiveBlocks(Math.floor(width / 2 - 1), 0)
 
 const renderer = new Vue({
     el: "#playground",
