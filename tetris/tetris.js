@@ -1,16 +1,16 @@
-﻿//feel free to move this hole file into a function to be *modulelize*, I'd like to KISS
+﻿//feel free to move this hole file into a function/class to be *modulelize*, I'd like to KISS
 
-let width = 12
-let height = 30
+const width = 12
+const height = 30
 /** micro seconds to fall down one block */
-let fall_interval = 300
-let fall_timer
+const fall_interval = 300
 
 /**
  * active (moving) blocks
  * @type {GridItem[]}
  */
 let activeBlocks;
+
 /**
  * anchor (rotation center) of blocks
  * @type {GridItem}
@@ -18,7 +18,7 @@ let activeBlocks;
 let activeBlocks_anchor
 
 /**
- * grid of blocks
+ * grid of freezed blocks
  * @type {GridItem[]}
  */
 let grids = []
@@ -28,64 +28,30 @@ function inside_grid(x, y) { return !outside_grid(x, y) }
 function get_grid(x, y) { return inside_grid(x, y) && grids[x + y * width] }
 function set_grid(x, y, block) { return inside_grid(x, y) && (grids[x + y * width] = block) }
 
-Vue.component('grid-item', {
-    props: ['x', 'y', 'color'],
-    template: `<div :style=" { gridColumn: x+1, gridRow: y+1, backgroundColor: color} "/>`
-})
-
-let renderer = new Vue({
-    el: "#playground",
-    data: { state: 0 },
-    computed: {
-        grids() {
-            const update = this.state;
-            return [].concat(grids, activeBlocks)
-        },
-        staticStyle() {
-            const [vw, vh] = matchWindowSize(width, height, 1.0)
-            return {
-                gridTemplateRows: `repeat(${height},1fr)`,
-                gridTemplateColumns: `repeat(${width},1fr)`,
-                width: `${vw}px`,
-                height: `${vh}px`
-            }
-        },
-    },
-    methods: {
-        update() { ++this.state; }
-    }
-})
-
-function init() {
-
-    RegisterGlobalArrowKeyHandler(
-        () => { TryRotate(); renderer.update(); },
-        () => { MoveDownOrNewOrEnd(); renderer.update(); },
-        () => { TryMove(-1, 0); renderer.update() },
-        () => { TryMove(1, 0); renderer.update() }
-    )
-
-    fall_timer = setInterval(() => { MoveDownOrNewOrEnd(); renderer.update() }, fall_interval)
-
-    activeBlocks_anchor = new GridItem(0, 0)
-    GenerateBlocks(RandomTetris(), Math.floor(width / 2 - 1), 0)
-}
+///
+/// tetris move functions
+///
 
 function MoveDownOrNewOrEnd() {
     let success = TryMove(0, 1)
     if (success) return true
 
+    //freeze this block
     activeBlocks.forEach(x => set_grid(x.x, x.y, x))
     CheckRows()
 
+    //if touch top, end
     if (activeBlocks.find(x => x.y < 1)) {
         End()
         return false
     }
-    GenerateBlocks(RandomTetris(), Math.floor(Math.random(width / 3) + width / 2 - 1), 0)
+
+    //generate new active block
+    GenerateBlocks(Math.floor(Math.random(width / 3) + width / 2 - 1), 0)
     return false
 }
 
+//check and remove filled rows (only check rows effected by activeBlocks)
 function CheckRows() {
     let target_rows = [... new Set(activeBlocks.map(x => x.y))]
     const columns = Array(width).fill().map((x, i) => i) //[1,2,...,width-1]
@@ -112,11 +78,6 @@ function CheckRows() {
     }
 
     return remove_rows
-}
-
-function End() {
-    clearInterval(fall_timer)
-    controller.detach_all()
 }
 
 function TryRotate() {
@@ -155,6 +116,10 @@ function TryMove(dx, dy) {
     return true
 }
 
+///
+/// Grid functions
+///
+
 class GridItem {
     constructor(x, y, color) {
         this.x = x
@@ -174,11 +139,12 @@ GridItem.currentID = 0;
  * @param {number} y upperleft-y
  * @param {string} color css color string or false value for random color
  */
-function GenerateBlocks(template, x, y, color) {
+function GenerateBlocks(x, y, template, color) {
+    template = template || RandomTetrisTemplate()
     color = color || `hsl(${Math.floor(Math.random() * 360)}, 100%, 50%)`
 
     activeBlocks = template.map(([dx, dy]) => new GridItem(x + dx, y + dy, color))
-    activeBlocks_anchor.pos = [x, y]
+    activeBlocks_anchor = new GridItem(x, y)
 }
 
 /** @typedef {number[][]} tetris_template */
@@ -187,7 +153,7 @@ function GenerateBlocks(template, x, y, color) {
  * template of tetris
  * @enum {tetris_template}
  */
-const tetris_blocks = {
+const tetris_blocks_template = {
     'L1': [[0, 0], [0, 1], [0, 2], [1, 0]],
     'L2': [[0, 0], [0, 1], [0, 2], [-1, 0]],
     'T': [[-1, 0], [0, 0], [1, 0], [0, 1]],
@@ -195,9 +161,57 @@ const tetris_blocks = {
     'I': [[-1, 0], [0, 0], [1, 0], [2, 0]],
 }
 
-function RandomTetris() {
-    let choice = Object.keys(tetris_blocks)
-    return tetris_blocks[choice[Math.floor(Math.random() * choice.length)]]
+function RandomTetrisTemplate() {
+    let choice = Object.keys(tetris_blocks_template)
+    return tetris_blocks_template[choice[Math.floor(Math.random() * choice.length)]]
 }
 
-init()
+///
+/// start game
+///
+
+GenerateBlocks(Math.floor(width / 2 - 1), 0)
+
+const renderer = new Vue({
+    el: "#playground",
+    data: { state: 0 },
+    computed: {
+        grids() {
+            const update = this.state;
+            return [].concat(grids, activeBlocks)
+        },
+        staticStyle() {
+            const [vw, vh] = matchWindowSize(width, height, 1.0)
+            return {
+                gridTemplateRows: `repeat(${height},1fr)`,
+                gridTemplateColumns: `repeat(${width},1fr)`,
+                width: `${vw}px`,
+                height: `${vh}px`
+            }
+        },
+    },
+    methods: {
+        update() { ++this.state; }
+    },
+    components: {
+        'grid-item': {
+            props: ['x', 'y', 'color'],
+            template: `<div :style=" { gridColumn: x+1, gridRow: y+1, backgroundColor: color} "/>`
+        }
+    }
+})
+
+const controller = RegisterGlobalArrowKeyHandler(
+    () => { TryRotate(); renderer.update(); },
+    () => { MoveDownOrNewOrEnd(); renderer.update(); },
+    () => { TryMove(-1, 0); renderer.update() },
+    () => { TryMove(1, 0); renderer.update() }
+)
+
+const fall_timer = setInterval(() => { MoveDownOrNewOrEnd(); renderer.update() }, fall_interval)
+
+//End the game
+function End() {
+    clearInterval(fall_timer)
+    UnRegisterGlobalArrowKeyHandler(controller)
+}

@@ -20,7 +20,10 @@ function RegisterGlobalArrowKeyHandler(up, down, left, right) {
         if (target)
             target();
     }
+    return handler
 }
+
+function UnRegisterGlobalArrowKeyHandler(handler) { document.removeEventListener('keydown', handler) }
 
 /**
  * scale size to match screensize*max_ratio
