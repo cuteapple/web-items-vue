@@ -1,5 +1,4 @@
-﻿let playground
-let width = 12
+﻿let width = 12
 let height = 30
 /** micro seconds to fall down one block */
 let fall_interval = 300
@@ -146,24 +145,6 @@ function TryRotate() {
     return true
 }
 
-let down = false;
-function Down() {
-    if (down) return
-    down = true;
-    clearInterval(fall_timer)
-    requestAnimationFrame(_Down)
-}
-
-function _Down() {
-    if (MoveDownOrNewOrEnd()) {
-        requestAnimationFrame(_Down)
-        return
-    }
-
-    down = false;
-    fall_timer = setInterval(MoveDownOrNewOrEnd, fall_interval)
-}
-
 /**
  * try move activeBlocks by dx, dy
  * no action if any Block cannot move
@@ -192,11 +173,6 @@ class GridItem {
         this.color = color
         this.id = GridItem.currentID++;
     }
-
-    set x(value) { this._x = value; }
-    get x() { return this._x; }
-    set y(value) { this._y = value; }
-    get y() { return this._y; }
     set pos(p) { this.x = p[0]; this.y = p[1]; }
     get pos() { return [this.x, this.y] }
 }
