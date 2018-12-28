@@ -10,6 +10,8 @@
     <script src="tetris.js" defer></script>
 </head>
 <body>
-    <div id="playground" :style="staticStyle"></div>
+    <div id="playground" :style="staticStyle">
+        <grid-item v-for="item in grids" v-if="item" :x="item.x" :y="item.y" :color="item.color" :key="item.id"></grid-item>
+    </div>
 </body>
 </html>

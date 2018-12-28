@@ -10,10 +10,7 @@ html {
 
 #playground {
     margin: auto;
-    /*width: 80vmin;
-    height: 80vmin;*/ /*control by css.js*/
 }
-
 
 #playground {
     display: grid;
@@ -21,7 +18,7 @@ html {
     background-color: black;
     border-width: 3px;
     border-style: solid;
-    animation: border-hsl-ring 30s linear infinite /*control by css.js*/
+    animation: border-hsl-ring 30s linear infinite
 }
 
 @keyframes border-hsl-ring {
@@ -52,11 +49,4 @@ html {
     100% {
         border-color: hsl(360, 100%, 50%)
     }
-}
-    
-.anchor {
-    display: none; /*do not show anchor*/
-    z-index: 1;
-    background-color: white;
-    border-radius: 50% 50%;
 }
