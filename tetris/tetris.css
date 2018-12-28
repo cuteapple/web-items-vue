@@ -1,0 +1,52 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+html {
+    background-color: black;
+}
+
+#playground {
+    margin: auto;
+}
+
+#playground {
+    display: grid;
+    grid-gap: 1px;
+    background-color: black;
+    border-width: 3px;
+    border-style: solid;
+    animation: border-hsl-ring 30s linear infinite
+}
+
+@keyframes border-hsl-ring {
+    0% {
+        border-color: hsl(0, 100%, 50%)
+    }
+
+    16% {
+        border-color: hsl(60, 100%, 50%)
+    }
+
+    33% {
+        border-color: hsl(120, 100%, 50%)
+    }
+
+    50% {
+        border-color: hsl(180, 100%, 50%)
+    }
+
+    66% {
+        border-color: hsl(240, 100%, 50%)
+    }
+
+    83% {
+        border-color: hsl(300, 100%, 50%)
+    }
+
+    100% {
+        border-color: hsl(360, 100%, 50%)
+    }
+}

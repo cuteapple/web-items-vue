@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>tetris</title>
+    <script src="vue.js" defer></script>
+
+    <link href="tetris.css" type="text/css" rel="stylesheet" />
+
+    <script src="utility.js" defer></script>
+    <script src="tetris.js" defer></script>
+</head>
+<body>
+    <div id="playground" :style="staticStyle">
+        <grid-item v-for="item in grids" v-if="item" :x="item.x" :y="item.y" :color="item.color" :key="item.id"></grid-item>
+    </div>
+</body>
+</html>
